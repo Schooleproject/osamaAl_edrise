@@ -1,3 +1,4 @@
 const Map<String, String> en = {
-  'home':'Home'
+  "home": "Home",
+  "changeLanguage": "Change Language"
 };

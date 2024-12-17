@@ -1,29 +1,31 @@
-import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'MyLang/CashData.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class AppLanguage extends GetxController {
-  RxString appLocal = 'ar'.obs;  // Make appLocal observable
+class AppLanguage with ChangeNotifier {
+  String _appLocal = 'ar'; // القيمة الافتراضية
 
-  @override
-  void onInit() async {
-    super.onInit();
-    CashData cash = CashData();
-    // Load saved language or default to 'ar'
-    appLocal.value = await cash.selectedLanguage ?? 'ar';
-    Get.updateLocale(Locale(appLocal.value));  // Set locale immediately
+  String get appLocal => _appLocal;
+
+  AppLanguage() {
+    _loadLanguage();
   }
 
-  // Method to change language
-  void changeLanguage(String type) async {
-    CashData cash = CashData();
+  // تحميل اللغة المحفوظة
+  Future<void> _loadLanguage() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    _appLocal = prefs.getString('lang') ?? 'ar';
+    notifyListeners();
+  }
 
-    if (appLocal.value == type) {
+  // تغيير اللغة
+  void changeLanguage(String type) async {
+    if (_appLocal == type) {
       return;
     }
 
-    appLocal.value = type;
-    await cash.saveLanguageState(type); // Save selected language
-    Get.updateLocale(Locale(type)); // Update locale immediately
+    _appLocal = type;
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('lang', type);
+    notifyListeners(); // Notify listeners to update UI
   }
 }

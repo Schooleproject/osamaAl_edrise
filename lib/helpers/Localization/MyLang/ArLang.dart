@@ -1,3 +1,4 @@
 const Map<String, String> ar = {
-'home':'البداية'
+  "home": "ةالبداية",
+  "changeLanguage": "تغيير اللغة"
 };
